@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Geografía Mundial</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            /* Sfondo immagine */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('cumple_flor.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        /* CONTAINER PRINCIPALE ROSA CHIARO CON EFFETTO VETRO */
+        .pink-container {
+            background: rgba(252, 231, 243, 0.95); /* Rosa chiaro */
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(244, 114, 182, 0.3);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(251, 207, 232, 0.6);
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(236, 72, 153, 0.5);
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(236, 72, 153, 0.8);
+        }
+        @keyframes pulse-subtle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        .animate-pulse-subtle {
+            animation: pulse-subtle 3s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="text-pink-950 flex flex-col justify-between p-3 sm:p-6 min-h-screen">
+
+    <!-- Header -->
+    <header class="max-w-4xl w-full mx-auto flex items-center justify-between py-4 px-6 pink-container rounded-2xl mb-6 shadow-xl">
+        <div class="flex items-center space-x-3">
+            <div class="bg-gradient-to-tr from-pink-500 to-rose-600 p-3 rounded-xl shadow-lg shadow-pink-500/30">
+                <i class="fa-solid font-bold fa-earth-americas text-2xl text-white"></i>
+            </div>
+            <div>
+                <h1 class="text-xl sm:text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-pink-600 to-rose-600">Flor Quiz</h1>
+                <p class="text-xs text-pink-700 hidden sm:block">Poné a prueba tus conocimientos</p>
+            </div>
+        </div>
+        <button id="leaderboardToggleBtn" onclick="toggleLeaderboardModal()" class="flex items-center space-x-2 bg-pink-200/80 hover:bg-pink-300 text-pink-900 border border-pink-300 px-4 py-2 rounded-xl transition duration-200 text-sm font-semibold shadow-sm">
+            <i class="fa-solid fa-trophy text-amber-500"></i>
+            <span>Posiciones</span>
+        </button>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl w-full mx-auto flex-grow flex flex-col justify-center">
+
+        <!-- 1. REGISTRATION SCREEN -->
+        <div id="screen-register" class="pink-container rounded-3xl p-6 sm:p-10 shadow-2xl transition-all duration-300">
+            <div class="text-center max-w-xl mx-auto space-y-6">
+                <div class="inline-block p-4 rounded-full bg-pink-200/60 border border-pink-300 mb-2 animate-pulse-subtle">
+                    <i class="fa-solid fa-compass text-5xl text-pink-600"></i>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-pink-950">¡Bienvenido al Cumple de Flor! Quiz de Cultura General</h2>
+                <p class="text-pink-900 text-sm sm:text-base leading-relaxed font-medium">
+                    Desafiá tu cultura general con <strong class="text-pink-700">50 preguntas</strong> de todo el mundo. 
+                    Tenés un tiempo límite de <strong class="text-rose-700">10 minutos</strong>. Para aprobar la prueba necesitás responder correctamente al menos <strong class="text-emerald-700">30 preguntas</strong>.
+                </p>
+
+                <!-- Rules Box -->
+                <div class="grid grid-cols-3 gap-3 text-left my-6 bg-pink-200/50 p-4 rounded-2xl border border-pink-300 text-xs sm:text-sm">
+                    <div class="flex flex-col items-center text-center p-2">
+                        <i class="fa-solid fa-list-check text-pink-600 text-xl mb-1"></i>
+                        <span class="font-bold text-pink-950">50 Preguntas</span>
+                        <span class="text-xs text-pink-700">Opciones múltiples</span>
+                    </div>
+                    <div class="flex flex-col items-center text-center p-2">
+                        <i class="fa-solid fa-stopwatch text-rose-600 text-xl mb-1"></i>
+                        <span class="font-bold text-pink-950">10 Minutos</span>
+                        <span class="text-xs text-pink-700">Tiempo máximo</span>
+                    </div>
+                    <div class="flex flex-col items-center text-center p-2">
+                        <i class="fa-solid fa-award text-emerald-600 text-xl mb-1"></i>
+                        <span class="font-bold text-pink-950">Mínimo: 30/50</span>
+                        <span class="text-xs text-pink-700">Para aprobar</span>
+                    </div>
+                </div>
+
+                <form onsubmit="startQuiz(event)" class="space-y-4 text-left">
+                    <div>
+                        <label for="username" class="block text-xs font-bold text-pink-900 uppercase tracking-wider mb-2">Ingresá tu Nombre o Apodo</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-pink-400"></i>
+                            <input type="text" id="username" required placeholder="Ej. San Martín" 
+                                class="w-full bg-white border border-pink-300 focus:border-pink-500 rounded-xl pl-11 pr-4 py-3 text-pink-950 placeholder-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-500/40 transition duration-200 font-medium shadow-sm">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full py-4 bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white font-bold text-lg rounded-xl shadow-lg shadow-pink-500/25 transform hover:-translate-y-0.5 active:translate-y-0 transition duration-200 flex items-center justify-center space-x-2">
+                        <span>EMPEZAR QUIZ</span>
+                        <i class="fa-solid fa-play text-sm"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 2. QUIZ SCREEN -->
+        <div id="screen-quiz" class="hidden pink-container rounded-3xl p-6 sm:p-8 shadow-2xl transition-all duration-300">
+            <!-- Top Bar: Timer & Progress -->
+            <div class="flex flex-wrap items-center justify-between gap-4 pb-6 mb-6 border-b border-pink-200">
+                <!-- User Info -->
+                <div class="flex items-center space-x-2">
+                    <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span id="player-display-name" class="font-bold text-pink-950">Jugador</span>
+                </div>
+
+                <!-- Progress Counter -->
+                <div class="text-sm font-bold text-pink-900 bg-pink-200/60 px-4 py-2 rounded-xl border border-pink-300">
+                    Pregunta <span id="current-q-num" class="text-pink-600 font-bold text-base">1</span> de <span class="text-pink-800">50</span>
+                </div>
+
+                <!-- Timer -->
+                <div id="timer-box" class="flex items-center space-x-2 bg-white border border-pink-300 px-4 py-2 rounded-xl shadow-sm">
+                    <i class="fa-solid fa-clock text-rose-500" id="timer-icon"></i>
+                    <span id="timer-text" class="font-mono text-lg font-bold text-rose-600">10:00</span>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-pink-200/80 h-2.5 rounded-full overflow-hidden mb-8">
+                <div id="progress-bar-fill" class="bg-gradient-to-r from-pink-500 to-rose-600 h-full w-0 transition-all duration-300"></div>
+            </div>
+
+            <!-- Question & Options Container -->
+            <div class="space-y-6">
+                <h3 id="question-text" class="text-lg sm:text-xl font-bold text-pink-950 min-h-[60px] flex items-center">
+                    Cargando pregunta...
+                </h3>
+
+                <div id="options-container" class="grid grid-cols-1 gap-3">
+                    <!-- Options buttons rendered dynamically -->
+                </div>
+            </div>
+
+            <!-- Footer / Next Button -->
+            <div class="mt-8 pt-4 border-t border-pink-200 flex justify-end">
+                <button id="next-btn" onclick="nextQuestion()" disabled class="px-6 py-3 bg-pink-200/60 opacity-50 cursor-not-allowed text-pink-400 font-bold rounded-xl flex items-center space-x-2 transition duration-200">
+                    <span>Siguiente Pregunta</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 3. RESULTS SCREEN -->
+        <div id="screen-result" class="hidden pink-container rounded-3xl p-6 sm:p-10 shadow-2xl text-center transition-all duration-300">
+            <div id="result-badge-icon" class="w-24 h-24 mx-auto rounded-full flex items-center justify-center mb-6 shadow-xl text-5xl">
+                <!-- Icon inserted via JS -->
+            </div>
+
+            <h2 id="result-status-title" class="text-3xl font-black text-pink-950 mb-2">Resultado</h2>
+            <p id="result-status-msg" class="text-pink-900 mb-8 max-w-md mx-auto font-medium">Mensaje de estado</p>
+
+            <!-- Stat Cards -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-2xl mx-auto mb-8">
+                <div class="bg-white/80 p-4 rounded-2xl border border-pink-200 shadow-sm">
+                    <span class="block text-xs text-pink-700 font-bold mb-1">Puntaje</span>
+                    <span id="res-score" class="text-2xl font-extrabold text-pink-600">0 / 50</span>
+                </div>
+                <div class="bg-white/80 p-4 rounded-2xl border border-pink-200 shadow-sm">
+                    <span class="block text-xs text-pink-700 font-bold mb-1">Efectividad</span>
+                    <span id="res-accuracy" class="text-2xl font-extrabold text-emerald-600">0%</span>
+                </div>
+                <div class="bg-white/80 p-4 rounded-2xl border border-pink-200 shadow-sm">
+                    <span class="block text-xs text-pink-700 font-bold mb-1">Tiempo Utilizado</span>
+                    <span id="res-time" class="text-2xl font-extrabold text-rose-600">00:00</span>
+                </div>
+                <div class="bg-white/80 p-4 rounded-2xl border border-pink-200 shadow-sm">
+                    <span class="block text-xs text-pink-700 font-bold mb-1">Estado</span>
+                    <span id="res-pass" class="text-2xl font-extrabold text-pink-950">--</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <button onclick="resetQuiz()" class="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white font-bold rounded-xl shadow-lg transition duration-200">
+                    <i class="fa-solid fa-rotate-right mr-2"></i> Volver a Intentar
+                </button>
+                <button onclick="toggleLeaderboardModal()" class="w-full sm:w-auto px-8 py-3.5 bg-white hover:bg-pink-50 text-pink-900 border border-pink-300 font-bold rounded-xl shadow-sm transition duration-200">
+                    <i class="fa-solid fa-trophy mr-2 text-amber-500"></i> Ver Posiciones
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- LEADERBOARD MODAL -->
+    <div id="modal-leaderboard" class="fixed inset-0 bg-slate-950/70 backdrop-blur-md hidden items-center justify-center p-4 z-50 transition-opacity duration-300">
+        <div class="pink-container w-full max-w-2xl rounded-3xl p-6 sm:p-8 shadow-2xl relative border border-pink-300 flex flex-col max-h-[90vh]">
+            
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between pb-4 border-b border-pink-200">
+                <div class="flex items-center space-x-3">
+                    <i class="fa-solid fa-trophy text-2xl text-amber-500"></i>
+                    <div>
+                        <h3 class="text-xl font-extrabold text-pink-950">Tabla de Posiciones</h3>
+                        <p class="text-xs text-pink-700">Ordenados por respuestas correctas y menor tiempo</p>
+                    </div>
+                </div>
+                <button onclick="toggleLeaderboardModal()" class="text-pink-700 hover:text-pink-950 p-2 rounded-lg bg-pink-200/60">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Leaderboard Table Container -->
+            <div class="overflow-y-auto custom-scrollbar my-4 flex-grow pr-1">
+                <table class="w-full text-left text-sm text-pink-950">
+                    <thead class="bg-pink-200/80 text-xs uppercase text-pink-900 sticky top-0 border-b border-pink-300">
+                        <tr>
+                            <th class="py-3 px-3 rounded-l-lg">Pos</th>
+                            <th class="py-3 px-3">Jugador</th>
+                            <th class="py-3 px-3 text-center">Puntos</th>
+                            <th class="py-3 px-3 text-center">Tiempo</th>
+                            <th class="py-3 px-3 text-right rounded-r-lg">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-table-body" class="divide-y divide-pink-200">
+                        <!-- Dynamic rows -->
+                    </tbody>
+                </table>
+                <div id="leaderboard-empty" class="hidden text-center py-8 text-pink-400">
+                    <i class="fa-regular fa-folder-open text-4xl mb-2"></i>
+                    <p>No hay resultados guardados en la tabla todavía.</p>
+                </div>
+            </div>
+
+            <!-- Modal Actions: Import / Export JSON -->
+            <div class="pt-4 border-t border-pink-200 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center space-x-2">
+                    <button onclick="exportLeaderboardJSON()" class="px-3.5 py-2 bg-white hover:bg-pink-50 text-pink-900 rounded-xl text-xs font-bold border border-pink-300 flex items-center space-x-1.5 transition shadow-sm">
+                        <i class="fa-solid fa-download text-pink-600"></i>
+                        <span>Exportar JSON</span>
+                    </button>
+                    
+                    <label for="import-json-input" class="px-3.5 py-2 bg-white hover:bg-pink-50 text-pink-900 rounded-xl text-xs font-bold border border-pink-300 flex items-center space-x-1.5 cursor-pointer transition shadow-sm">
+                        <i class="fa-solid fa-upload text-emerald-600"></i>
+                        <span>Importar JSON</span>
+                    </label>
+                    <input type="file" id="import-json-input" accept=".json" onchange="importLeaderboardJSON(event)" class="hidden">
+                </div>
+
+                <button onclick="clearLeaderboard()" class="px-3.5 py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 rounded-xl text-xs font-bold border border-rose-300 transition">
+                    <i class="fa-solid fa-trash mr-1"></i> Limpiar
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-pink-950 text-white px-5 py-3 rounded-xl shadow-2xl border border-pink-500 flex items-center space-x-3 transition-all duration-300 transform translate-y-20 opacity-0 z-50">
+        <i id="toast-icon" class="fa-solid fa-circle-info text-pink-400"></i>
+        <span id="toast-msg" class="text-sm font-medium">Notificación</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-8 text-center text-xs text-pink-100 py-2">
+        <p>Quiz de Cultura General &copy; 2026 - Cumple de Flor</p>
+    </footer>
+
+    <!-- JS APP LOGIC -->
+    <script>
+        const QUESTIONS_BANK = [
+  { q: "¿Cuál es la capital de Canadá?", options: ["Toronto", "Vancouver", "Ottawa", "Montreal"], answer: 2 },
+  { q: "¿En qué provincia argentina se encuentran las Cataratas del Iguazú?", options: ["Misiones", "Corrientes", "Entre Ríos", "Salta"], answer: 0 },
+  { q: "¿Cuál es el río más largo del mundo?", options: ["Río Nilo", "Río Amazonas", "Río Misisipi", "Río Yangtsé"], answer: 1 },
+  { q: "¿Cuál es el país más extenso del mundo por superficie?", options: ["Canadá", "Estados Unidos", "Rusia", "China"], answer: 2 },
+  { q: "¿Qué cerro es la cima más alta del continente americano?", options: ["Monte Fitz Roy", "Cerro Aconcagua", "Nevado Ojos del Salado", "Monte Everest"], answer: 1 },
+  { q: "¿En qué país se encuentran las famosas pirámides de Giza?", options: ["Grecia", "Egipto", "México", "Perú"], answer: 1 },
+  { q: "¿Cuál es el océano más grande de la Tierra?", options: ["Océano Atlántico", "Océano Pacífico", "Océano Índico", "Océano Ártico"], answer: 1 },
+  { q: "¿Qué glaciar famoso de la Patagonia argentina es conocido por sus rupturas periódicas?", options: ["Glaciar Upsala", "Glaciar Spegazzini", "Glaciar Perito Moreno", "Glaciar Viedma"], answer: 2 },
+  { q: "¿Cuál es la capital de Japón?", options: ["Kioto", "Osaka", "Tokio", "Hokkai"], answer: 2 },
+  { q: "¿Qué cadena montañosa atraviesa el oeste de América del Sur?", options: ["Los Alpes", "Los Andes", "Las Rocosas", "El Himalaya"], answer: 1 },
+  { q: "¿Cuál es la ciudad más austral del mundo?", options: ["Punta Arenas", "Ushuaia", "Río Gallegos", "Puerto Williams"], answer: 1 },
+  { q: "¿En qué país se encuentra la antigua ciudad inca de Machu Picchu?", options: ["Bolivia", "Ecuador", "Perú", "Colombia"], answer: 2 },
+  { q: "¿Cuál es el desierto cálido más grande del mundo?", options: ["Desierto de Atacama", "Desierto del Sahara", "Desierto de Gobi", "Desierto de Kalahari"], answer: 1 },
+  { q: "¿Cuál es el lago navegable más alto del mundo, ubicado entre Bolivia y Perú?", options: ["Lago Nahuel Huapi", "Lago Titicaca", "Lago Maracaibo", "Lago Nicaragua"], answer: 1 },
+  { q: "¿En qué país de Europa se encuentra el Coliseo Romano?", options: ["España", "Francia", "Grecia", "Italia"], answer: 3 },
+  { q: "¿En qué año ocurrió el descubrimiento de América por parte de la expedición de Cristóbal Colón?", options: ["1492", "1500", "1776", "1810"], answer: 0 },
+  { q: "¿En qué año se declaró la Independencia de la República Argentina?", options: ["1810", "1816", "1820", "1853"], answer: 1 },
+  { q: "¿En qué año comenzó la Segunda Guerra Mundial?", options: ["1914", "1918", "1939", "1945"], answer: 2 },
+  { q: "¿Quién lideró el Cruce de los Andes para lograr la independencia de Chile y Perú?", options: ["Manuel Belgrano", "José de San Martín", "Simón Bolívar", "Cornelio Saavedra"], answer: 1 },
+  { q: "¿Qué suceso histórico provocó la caída del Imperio Romano de Occidente en el año 476 d.C.?", options: ["Las invasiones bárbaras", "La Revolución Industrial", "La peste negra", "El descubrimiento de América"], answer: 0 },
+  { q: "¿En qué año cayó el Muro de Berlín, símbolo del fin de la Guerra Fría?", options: ["1975", "1989", "1991", "2000"], answer: 1 },
+  { q: "¿Qué revolución iniciada en 1789 cambió la historia política con la Declaración de los Derechos del Hombre?", options: ["Revolución Industrial", "Revolución Francesa", "Revolución Rusa", "Revolución Americana"], answer: 1 },
+  { q: "¿Quién fue el primer presidente de los Estados Unidos?", options: ["Abraham Lincoln", "Thomas Jefferson", "George Washington", "Benjamin Franklin"], answer: 2 },
+  { q: "¿En qué año regresó la democracia a la Argentina con la elección de Raúl Alfonsín?", options: ["1973", "1982", "1983", "1989"], answer: 2 },
+  { q: "¿Qué civilización construyó las pirámides del Sol y de la Luna en Teotihuacán?", options: ["Incas", "Aztecas", "Teotihuacanos / Mesoamericanos", "Mayas"], answer: 2 },
+  { q: "¿Qué selección de fútbol masculino ganó el Mundial de la FIFA Catar 2022?", options: ["Francia", "Brasil", "Argentina", "Croacia"], answer: 2 },
+  { q: "¿En qué ciudad se celebraron los Juegos Olímpicos de Verano en 2024?", options: ["Londres", "Tokio", "París", "Los Ángeles"], answer: 2 },
+  { q: "¿Qué tenista ostenta el récord de más títulos de Grand Slam en la categoría masculina individual?", options: ["Roger Federer", "Rafael Nadal", "Novak Djokovic", "Carlos Alcaraz"], answer: 2 },
+  { q: "¿Qué deportista argentino es considerado una leyenda del básquetbol y campeón de la NBA con San Antonio Spurs?", options: ["Luis Scola", "Manu Ginóbili", "Facundo Campazzo", "Luka Dončić"], answer: 1 },
+  { q: "¿En qué país nació el piloto de Fórmula 1 Lewis Hamilton?", options: ["Alemania", "Reino Unido", "Estados Unidos", "Canadá"], answer: 1 },
+  { q: "¿Cuántas Copas Mundiales de Fútbol de la FIFA ha ganado la selección de Brasil?", options: ["3", "4", "5", "6"], answer: 2 },
+  { q: "¿En qué disciplina olímpica se destaca el jamaicano Usain Bolt?", options: ["Natación", "Atletismo (Velocidad)", "Salto de longitud", "Ciclismo"], answer: 1 },
+  { q: "¿Cómo se llama el Superclásico del fútbol argentino jugado entre los dos equipos más populares del país?", options: ["Boca Juniors vs. River Plate", "Racing vs. Independiente", "Real Madrid vs. Barcelona", "Milan vs. Inter"], answer: 0 },
+  { q: "¿Cuál es el país con mayor cantidad de títulos en la historia de la Copa Libertadores de América?", options: ["Brasil", "Uruguay", "Argentina", "Colombia"], answer: 2 },
+  { q: "¿En qué deporte se utiliza la expresión 'Home Run'?", options: ["Cricket", "Béisbol", "Softbol", "Fútbol Americano"], answer: 1 },
+  { q: "¿Qué icónica banda de rock británica lanzó el álbum 'Abbey Road' en 1969?", options: ["The Rolling Stones", "The Beatles", "Queen", "Pink Floyd"], answer: 1 },
+  { q: "¿Quién es considerado universalmente el 'Rey del Pop'?", options: ["Prince", "Michael Jackson", "Elvis Presley", "George Michael"], answer: 1 },
+  { q: "¿Qué banda argentina de rock fue liderada por el recordado Gustavo Cerati?", options: ["Serú Girán", "Soda Stereo", "Los Fabulosos Cadillacs", "Redonditos de Ricota"], answer: 1 },
+  { q: "¿Qué artista británico es el autor de éxitos globales como 'Shape of You' y 'Perfect'?", options: ["Ed Sheeran", "Harry Styles", "Sam Smith", "Adele"], answer: 0 },
+  { q: "¿Qué productor argentino se hizo mundialmente famoso por sus sesiones musicales ('Music Sessions') junto a artistas internacionales?", options: ["Tainy", "Bizarrap", "Metro Boomin", "Skrillex"], answer: 1 },
+  { q: "¿Qué cantante y compositora estadounidense batió récords globales de recaudación con su gira 'The Eras Tour'?", options: ["Beyoncé", "Taylor Swift", "Lady Gaga", "Rihanna"], answer: 1 },
+  { q: "¿Quién fue la figura más influyente en la historia del tango argentino, conocido como 'El Zorzal Criollo'?", options: ["Astor Piazzolla", "Carlos Gardel", "Osvaldo Pugliese", "Atahualpa Yupanqui"], answer: 1 },
+  { q: "¿Qué banda de rock británica es conocida por temas como 'Bohemian Rhapsody' y 'We Will Rock You'?", options: ["Led Zeppelin", "Queen", "AC/DC", "The Who"], answer: 1 },
+  { q: "¿Qué cantante puertorriqueño lanzó el álbum 'Un Verano Sin Ti' en 2022, uno de los más reproducidos en streaming?", options: ["Daddy Yankee", "Bad Bunny", "Rauw Alejandro", "J Balvin"], answer: 1 },
+  { q: "¿Qué prolífico artista argentino de música urbana se convirtió en el referente del trap llenando estadios en todo el mundo?", options: ["Duki", "Paulo Londra", "Trueno", "Milo J"], answer: 0 },
+  { q: "¿Cuál es el elemento químico más abundante en el universo?", options: ["Oxígeno", "Helio", "Hidrógeno", "Carbono"], answer: 2 },
+  { q: "¿Qué médico e investigador argentino desarrolló la técnica médica del bypass aortocoronario?", options: ["César Milstein", "René Favaloro", "Bernardo Houssay", "Luis Federico Leloir"], answer: 1 },
+  { q: "¿Qué científico formuló la teoría de la relatividad general?", options: ["Isaac Newton", "Albert Einstein", "Nikola Tesla", "Niels Bohr"], answer: 1 },
+  { q: "¿Cuál es la velocidad aproximada de la luz en el vacío?", options: ["150.000 km/s", "300.000 km/s", "1.000.000 km/s", "500.000 km/s"], answer: 1 },
+  { q: "¿Qué planeta del sistema solar es conocido como el 'Planeta Rojo'?", options: ["Venus", "Júpiter", "Marte", "Saturno"], answer: 2 }
+];
+
+        // --- ESTADO DE LA APLICACIÓN ---
+        const TOTAL_TIME = 600; // 10 minutos
+        const PASS_THRESHOLD = 30;
+
+        let currentUser = "";
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let timerInterval = null;
+        let timeRemaining = TOTAL_TIME;
+        let timeTaken = 0;
+        let leaderboard = [];
+
+        // --- CARICAMENTO AUTOMATICO JSON E LOCALSTORAGE ---
+        window.addEventListener('DOMContentLoaded', () => {
+            loadLeaderboardAutomatico();
+        });
+
+        async function loadLeaderboardAutomatico() {
+            try {
+                // Tenta di caricare il file JSON
+                const response = await fetch('punteggi.json');
+                if (response.ok) {
+                    const jsonLeaderboard = await response.json();
+                    if (Array.isArray(jsonLeaderboard) && jsonLeaderboard.length > 0) {
+                        leaderboard = jsonLeaderboard.map(item => ({
+                            name: item.name || item.nombre,
+                            score: item.score !== undefined ? item.score : item.puntaje,
+                            timeSeconds: item.timeSeconds !== undefined ? item.timeSeconds : item.tiempo,
+                            timeFormatted: item.timeFormatted || `${Math.floor((item.timeSeconds || item.tiempo) / 60)}m ${(item.timeSeconds || item.tiempo) % 60}s`,
+                            passed: item.passed !== undefined ? item.passed : ((item.score || item.puntaje) >= PASS_THRESHOLD),
+                            date: item.date || item.fecha || new Date().toLocaleDateString('es-AR')
+                        }));
+                        sortAndRender();
+                        return;
+                    }
+                }
+            } catch (error) {
+                console.log("Impossibile caricare il file JSON locale direttamente. Uso il localStorage.");
+            }
+
+            // Fallback su localStorage
+            const stored = localStorage.getItem('geo_quiz_leaderboard');
+            if (stored) {
+                leaderboard = JSON.parse(stored);
+            } else {
+                leaderboard = [];
+            }
+            sortAndRender();
+        }
+
+        function sortAndRender() {
+            leaderboard.sort((a, b) => (b.score - a.score) || (a.timeSeconds - b.timeSeconds));
+            saveLeaderboardToStorage();
+            renderLeaderboard();
+        }
+
+        // --- LÓGICA DEL QUIZ ---
+        function startQuiz(event) {
+            event.preventDefault();
+            const inputName = document.getElementById('username').value.trim();
+            if (!inputName) return;
+
+            currentUser = inputName;
+            document.getElementById('player-display-name').textContent = currentUser;
+
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            timeRemaining = TOTAL_TIME;
+            timeTaken = 0;
+
+            showScreen('screen-quiz');
+            startTimer();
+            renderQuestion();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            updateTimerDisplay();
+
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                timeTaken++;
+                updateTimerDisplay();
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    finishQuiz(true);
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            const text = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            const timerTextElem = document.getElementById('timer-text');
+            const timerBoxElem = document.getElementById('timer-box');
+            timerTextElem.textContent = text;
+
+            if (timeRemaining <= 60) {
+                timerBoxElem.classList.add('border-rose-500', 'bg-rose-100');
+                timerTextElem.classList.remove('text-rose-600');
+                timerTextElem.classList.add('text-rose-700', 'animate-pulse');
+            } else {
+                timerBoxElem.classList.remove('border-rose-500', 'bg-rose-100');
+                timerTextElem.classList.add('text-rose-600');
+                timerTextElem.classList.remove('text-rose-700', 'animate-pulse');
+            }
+        }
+
+        function renderQuestion() {
+            const qData = QUESTIONS_BANK[currentQuestionIndex];
+            
+            document.getElementById('current-q-num').textContent = currentQuestionIndex + 1;
+            const progressPercent = ((currentQuestionIndex + 1) / QUESTIONS_BANK.length) * 100;
+            document.getElementById('progress-bar-fill').style.width = `${progressPercent}%`;
+
+            document.getElementById('question-text').textContent = `${currentQuestionIndex + 1}. ${qData.q}`;
+
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            const selectedOption = userAnswers[currentQuestionIndex];
+
+            qData.options.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left p-4 rounded-xl border transition-all duration-200 font-medium flex items-center justify-between text-sm sm:text-base shadow-sm `;
+                
+                if (selectedOption === undefined) {
+                    btn.className += `bg-white/90 border-pink-200 hover:bg-pink-100 hover:border-pink-400 text-pink-950`;
+                } else if (selectedOption === idx) {
+                    btn.className += `bg-pink-500 border-pink-600 text-white font-bold ring-2 ring-pink-400`;
+                } else {
+                    btn.className += `bg-white/50 border-pink-200 text-pink-400 opacity-60`;
+                }
+
+                btn.onclick = () => selectOption(idx);
+
+                const optionLetter = String.fromCharCode(65 + idx);
+                btn.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="w-7 h-7 rounded-lg ${selectedOption === idx ? 'bg-white text-pink-600' : 'bg-pink-200 text-pink-900'} flex items-center justify-center font-bold text-xs">${optionLetter}</span>
+                        <span>${optText}</span>
+                    </div>
+                    ${selectedOption === idx ? '<i class="fa-solid fa-circle-check text-white text-lg"></i>' : ''}
+                `;
+
+                container.appendChild(btn);
+            });
+
+            const nextBtn = document.getElementById('next-btn');
+            if (userAnswers[currentQuestionIndex] !== undefined) {
+                nextBtn.disabled = false;
+                nextBtn.className = "px-6 py-3 bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white font-bold rounded-xl flex items-center space-x-2 transition duration-200 cursor-pointer shadow-md";
+                if (currentQuestionIndex === QUESTIONS_BANK.length - 1) {
+                    nextBtn.querySelector('span').textContent = "Terminar Quiz";
+                } else {
+                    nextBtn.querySelector('span').textContent = "Siguiente Pregunta";
+                }
+            } else {
+                nextBtn.disabled = true;
+                nextBtn.className = "px-6 py-3 bg-pink-200/60 opacity-50 cursor-not-allowed text-pink-400 font-bold rounded-xl flex items-center space-x-2 transition duration-200";
+            }
+        }
+
+        function selectOption(index) {
+            userAnswers[currentQuestionIndex] = index;
+            renderQuestion();
+        }
+
+        function nextQuestion() {
+            if (userAnswers[currentQuestionIndex] === undefined) return;
+
+            if (currentQuestionIndex < QUESTIONS_BANK.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+            } else {
+                finishQuiz(false);
+            }
+        }
+
+        function finishQuiz(timeOut = false) {
+            clearInterval(timerInterval);
+
+            score = 0;
+            QUESTIONS_BANK.forEach((q, idx) => {
+                if (userAnswers[idx] === q.answer) {
+                    score++;
+                }
+            });
+
+            const passed = score >= PASS_THRESHOLD;
+            const accuracy = Math.round((score / QUESTIONS_BANK.length) * 100);
+
+            const minutesTaken = Math.floor(timeTaken / 60);
+            const secondsTaken = timeTaken % 60;
+            const formattedTimeTaken = `${String(minutesTaken).padStart(2, '0')}:${String(secondsTaken).padStart(2, '0')}`;
+
+            document.getElementById('res-score').textContent = `${score} / ${QUESTIONS_BANK.length}`;
+            document.getElementById('res-accuracy').textContent = `${accuracy}%`;
+            document.getElementById('res-time').textContent = formattedTimeTaken;
+
+            const resPassElem = document.getElementById('res-pass');
+            const badgeElem = document.getElementById('result-badge-icon');
+            const titleElem = document.getElementById('result-status-title');
+            const msgElem = document.getElementById('result-status-msg');
+
+            if (passed) {
+                resPassElem.textContent = "APROBADO";
+                resPassElem.className = "text-2xl font-extrabold text-emerald-600";
+                
+                badgeElem.className = "w-24 h-24 mx-auto rounded-full flex items-center justify-center mb-6 shadow-xl text-5xl bg-emerald-100 text-emerald-600 border-2 border-emerald-300 animate-bounce";
+                badgeElem.innerHTML = `<i class="fa-solid fa-trophy"></i>`;
+
+                titleElem.textContent = "¡Felicitaciones!";
+                msgElem.textContent = `¡Aprobaste el quiz contestando correctamente ${score} preguntas de 50!`;
+            } else {
+                resPassElem.textContent = "NO APROBADO";
+                resPassElem.className = "text-2xl font-extrabold text-rose-600";
+
+                badgeElem.className = "w-24 h-24 mx-auto rounded-full flex items-center justify-center mb-6 shadow-xl text-5xl bg-rose-100 text-rose-600 border-2 border-rose-300";
+                badgeElem.innerHTML = `<i class="fa-solid fa-xmark"></i>`;
+
+                titleElem.textContent = timeOut ? "¡Tiempo agotado!" : "¡Casi lo lográs!";
+                msgElem.textContent = `Necesitás responder al menos ${PASS_THRESHOLD} preguntas bien para aprobar. Conseguiste ${score} puntos.`;
+            }
+
+            saveResultToLeaderboard({
+                name: currentUser,
+                score: score,
+                timeSeconds: timeTaken,
+                timeFormatted: formattedTimeTaken,
+                passed: passed,
+                date: new Date().toLocaleDateString('es-AR')
+            });
+
+            showScreen('screen-result');
+        }
+
+        function resetQuiz() {
+            document.getElementById('username').value = currentUser;
+            showScreen('screen-register');
+        }
+
+        // --- GESTIONE CLASSIFICA ---
+        function saveResultToLeaderboard(record) {
+            leaderboard.push(record);
+            sortAndRender();
+        }
+
+        function saveLeaderboardToStorage() {
+            localStorage.setItem('geo_quiz_leaderboard', JSON.stringify(leaderboard));
+        }
+
+        function renderLeaderboard() {
+            const tbody = document.getElementById('leaderboard-table-body');
+            const emptyMsg = document.getElementById('leaderboard-empty');
+            tbody.innerHTML = '';
+
+            if (leaderboard.length === 0) {
+                emptyMsg.classList.remove('hidden');
+                return;
+            } else {
+                emptyMsg.classList.add('hidden');
+            }
+
+            leaderboard.forEach((entry, idx) => {
+                const row = document.createElement('tr');
+                row.className = "hover:bg-pink-200/50 transition duration-150";
+
+                let medal = `<span class="font-bold text-pink-700">#${idx + 1}</span>`;
+                if (idx === 0) medal = `<i class="fa-solid fa-medal text-amber-500 text-lg"></i>`;
+                else if (idx === 1) medal = `<i class="fa-solid fa-medal text-slate-400 text-lg"></i>`;
+                else if (idx === 2) medal = `<i class="fa-solid fa-medal text-amber-700 text-lg"></i>`;
+
+                const isCurrent = entry.name === currentUser;
+
+                row.innerHTML = `
+                    <td class="py-3 px-3 font-medium">${medal}</td>
+                    <td class="py-3 px-3 font-semibold ${isCurrent ? 'text-pink-600 font-bold' : 'text-pink-950'}">
+                        ${escapeHtml(entry.name)} ${isCurrent ? '<span class="text-xs bg-pink-200 px-2 py-0.5 rounded text-pink-800 border border-pink-300">Vos</span>' : ''}
+                    </td>
+                    <td class="py-3 px-3 text-center font-bold text-pink-700">${entry.score}/50</td>
+                    <td class="py-3 px-3 text-center font-mono text-xs text-rose-700 font-bold">${entry.timeFormatted}</td>
+                    <td class="py-3 px-3 text-right">
+                        ${entry.passed 
+                            ? '<span class="inline-block bg-emerald-100 text-emerald-700 text-xs px-2.5 py-1 rounded-full border border-emerald-300 font-bold">Aprobado</span>' 
+                            : '<span class="inline-block bg-rose-100 text-rose-700 text-xs px-2.5 py-1 rounded-full border border-rose-300 font-bold">No Aprob.</span>'}
+                    </td>
+                `;
+
+                tbody.appendChild(row);
+            });
+        }
+
+        function exportLeaderboardJSON() {
+            if (leaderboard.length === 0) {
+                showToast("¡No hay datos para exportar!", "error");
+                return;
+            }
+
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(leaderboard, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `punteggi.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+
+            showToast("¡Tabla exportada en JSON con éxito!", "success");
+        }
+
+        function importLeaderboardJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if (Array.isArray(importedData)) {
+                        leaderboard = importedData.map(item => ({
+                            name: item.name || item.nombre,
+                            score: item.score !== undefined ? item.score : item.puntaje,
+                            timeSeconds: item.timeSeconds !== undefined ? item.timeSeconds : item.tiempo,
+                            timeFormatted: item.timeFormatted || `${Math.floor((item.timeSeconds || item.tiempo) / 60)}m ${(item.timeSeconds || item.tiempo) % 60}s`,
+                            passed: item.passed !== undefined ? item.passed : ((item.score || item.puntaje) >= PASS_THRESHOLD),
+                            date: item.date || item.fecha || new Date().toLocaleDateString('es-AR')
+                        }));
+                        sortAndRender();
+                        showToast("¡Tabla de posiciones importada con éxito!", "success");
+                    } else {
+                        showToast("¡El archivo JSON no tiene un formato válido!", "error");
+                    }
+                } catch (err) {
+                    showToast("Error al leer el archivo JSON", "error");
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        function clearLeaderboard() {
+            if (confirm("¿Estás seguro de que querés borrar toda la tabla de posiciones?")) {
+                leaderboard = [];
+                saveLeaderboardToStorage();
+                renderLeaderboard();
+                showToast("Tabla de posiciones limpiada", "info");
+            }
+        }
+
+        function showScreen(screenId) {
+            document.getElementById('screen-register').classList.add('hidden');
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('screen-result').classList.add('hidden');
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+
+        function toggleLeaderboardModal() {
+            const modal = document.getElementById('modal-leaderboard');
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            } else {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function showToast(message, type = "info") {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+            const toastIcon = document.getElementById('toast-icon');
+
+            toastMsg.textContent = message;
+
+            if (type === "success") {
+                toastIcon.className = "fa-solid fa-circle-check text-emerald-400";
+            } else if (type === "error") {
+                toastIcon.className = "fa-solid fa-triangle-exclamation text-rose-400";
+            } else {
+                toastIcon.className = "fa-solid fa-circle-info text-pink-400";
+            }
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;")
+                      .replace(/</g, "&lt;")
+                      .replace(/>/g, "&gt;")
+                      .replace(/"/g, "&quot;")
+                      .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Lucía",
+    "score": 45,
+    "timeSeconds": 320,
+    "timeFormatted": "05:20",
+    "passed": true,
+    "date": "03/11/2026"
+  },
+  {
+    "name": "Martín",
+    "score": 38,
+    "timeSeconds": 415,
+    "timeFormatted": "06:55",
+    "passed": true,
+    "date": "03/11/2026"
+  },
+  {
+    "name": "Mateo",
+    "score": 28,
+    "timeSeconds": 510,
+    "timeFormatted": "08:30",
+    "passed": false,
+    "date": "03/11/2026"
+  }
+]
